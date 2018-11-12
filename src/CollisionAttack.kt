@@ -11,13 +11,10 @@ class CollisionAttack {
     private var digest: java.security.MessageDigest = java.security.MessageDigest.getInstance("SHA-1")
     private val r = java.util.Random()
 
-    private fun bytesToHexString(array: ByteArray?): String? {
-        if (array == null) return null
-        val builder = StringBuilder()
-        for (b in array) {
-            builder.append(String.format("%02x", b))
-        }
-        return builder.toString()
+    private fun randomBytes(length: Int): ByteArray {
+        val random_bytes = ByteArray(length)
+        r.nextBytes(random_bytes)
+        return random_bytes
     }
 
     private fun sha1ToBitSet(input: ByteArray, bit_size: Int): BitSet {
@@ -29,37 +26,6 @@ class CollisionAttack {
         }
         return hash
     }
-
-    private fun testSha1Complete(data1: ByteArray?, data2: ByteArray?) {
-        val data1Hashed = DigestUtils.sha1Hex(data1)
-        val data2Hashed = DigestUtils.sha1Hex(data2)
-        if (Arrays.equals(data1, data2)) {
-            assertEquals(data1Hashed, data2Hashed)
-        } else {
-            throw Error("Sha1 doesn't match!")
-        }
-    }
-
-    private fun randomBytes(length: Int): ByteArray {
-        val random_bytes = ByteArray(length)
-        r.nextBytes(random_bytes)
-        return random_bytes
-    }
-
-
-    private fun writeBytesToFile(array : ByteArray?, name: String) {
-        if (array == null) return
-        val file = File(name)
-        if (file.exists()) file.delete()
-        FileUtils.writeByteArrayToFile(file, array)
-    }
-
-    private fun readFile(name : String): String? {
-        val file = File(name)
-        return bytesToHexString(file.readBytes())
-
-    }
-
 
     internal fun collisionAttack(bit_size: Int): Long {
         // Count how many times the hash function is called
@@ -114,6 +80,41 @@ class CollisionAttack {
     }
 
     companion object {
+
+        private fun bytesToHexString(array: ByteArray?): String? {
+            if (array == null) return null
+            val builder = StringBuilder()
+            for (b in array) {
+                builder.append(String.format("%02x", b))
+            }
+            return builder.toString()
+        }
+
+        private fun testSha1Complete(data1: ByteArray?, data2: ByteArray?) {
+            val data1Hashed = DigestUtils.sha1Hex(data1)
+            val data2Hashed = DigestUtils.sha1Hex(data2)
+            if (Arrays.equals(data1, data2)) {
+                assertEquals(data1Hashed, data2Hashed)
+            } else {
+                throw Error("Sha1 doesn't match!")
+            }
+        }
+
+        private fun writeBytesToFile(array : ByteArray?, name: String) {
+            if (array == null) return
+            val file = File(name)
+            if (file.exists()) file.delete()
+            FileUtils.writeByteArrayToFile(file, array)
+        }
+
+        private fun readFile(name : String): String? {
+            val file = File(name)
+            return bytesToHexString(file.readBytes())
+
+        }
+
+
+
         @JvmStatic
         fun main(args: Array<String>) {
             val ca = CollisionAttack()
