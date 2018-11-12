@@ -118,12 +118,15 @@ class CollisionAttack {
         @JvmStatic
         fun main(args: Array<String>) {
             val ca = CollisionAttack()
-            val collision_bytes = 60
-            val preimage_bytes = 50
-            println("--- Collision attack on $collision_bytes bits ---")
-            ca.collisionAttack(collision_bytes)
-            println("--- Pre Image attack on $preimage_bytes bits ---")
-            ca.preImageAttack(preimage_bytes)
+            val sc = Scanner(System.`in`)
+            print("Insert the number of bits to match in the collision attack: ")
+            val collision_bits = sc.nextInt()
+            print("Insert the number of bits to match in the pre-image attack: ")
+            val preimage_bits = sc.nextInt()
+            println("--- Collision attack on $collision_bits bits ---")
+            ca.collisionAttack(collision_bits)
+            println("--- Pre Image attack on $preimage_bits bits ---")
+            ca.preImageAttack(preimage_bits)
         }
     }
 }
